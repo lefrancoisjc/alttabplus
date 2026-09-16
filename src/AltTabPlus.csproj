@@ -12,6 +12,14 @@
     <Platforms>x64</Platforms>
     <LangVersion>latest</LangVersion>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <Version>1.0.0</Version>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <FileVersion>1.0.0.0</FileVersion>
+    <Product>AltTabPlus</Product>
+    <Description>Windows Alt+Tab replacement — one tile per Snap Group</Description>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <DebugType Condition="'$(Configuration)' == 'Release'">embedded</DebugType>
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
 
 </Project>

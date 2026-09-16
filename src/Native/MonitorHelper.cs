@@ -18,12 +18,6 @@ internal static class MonitorHelper
     [DllImport("user32.dll")]
     private static extern bool GetMonitorInfo(IntPtr hMonitor, ref MONITORINFO lpmi);
 
-    /// <summary>
-    /// Work area (screen minus taskbar) for the monitor a window lives on.
-    /// Falls back to the primary screen if the handle is invalid, which only
-    /// matters on the very unlikely path where a window's monitor disappeared
-    /// between enumeration and this call (e.g. a monitor was unplugged).
-    /// </summary>
     public static Rectangle GetWorkArea(IntPtr monitor)
     {
         var info = new MONITORINFO { cbSize = Marshal.SizeOf<MONITORINFO>() };
@@ -33,5 +27,16 @@ internal static class MonitorHelper
         }
 
         return Screen.PrimaryScreen?.WorkingArea ?? new Rectangle(0, 0, 1920, 1080);
+    }
+
+    public static Rectangle GetBounds(IntPtr monitor)
+    {
+        var info = new MONITORINFO { cbSize = Marshal.SizeOf<MONITORINFO>() };
+        if (monitor != IntPtr.Zero && GetMonitorInfo(monitor, ref info))
+        {
+            return info.rcMonitor.ToRectangle();
+        }
+
+        return Screen.PrimaryScreen?.Bounds ?? new Rectangle(0, 0, 1920, 1080);
     }
 }

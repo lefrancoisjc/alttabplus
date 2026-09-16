@@ -1,83 +1,127 @@
 # AltTabPlus
 
-Un remplaçant d'Alt+Tab pour Windows qui règle un problème précis : quand
-plusieurs fenêtres sont ancrées ensemble (Snap Layouts / Snap Groups),
-l'Alt+Tab natif les affiche à la fois comme groupe *et* comme fenêtres
-individuelles — ça pollue le sélecteur au lieu de le simplifier, et Windows
-ne propose aucun réglage officiel pour corriger ça
-([discussion Microsoft Community](https://techcommunity.microsoft.com/discussions/windows11/snapped-window-groups-and-individual-windows/3842896)).
+A Windows Alt+Tab replacement for a specific problem: when several windows
+are snapped together (Snap Layouts / Snap Groups), the native switcher shows
+them both as a group *and* as individual windows. That clutters the picker
+instead of simplifying it, and Windows has no official setting to fix it
+([Microsoft Community thread](https://techcommunity.microsoft.com/discussions/windows11/snapped-window-groups-and-individual-windows/3842896)).
 
-AltTabPlus remplace entièrement le switcher : un groupe ancré devient **une
-seule tuile**, avec un badge indiquant combien de fenêtres il contient.
+AltTabPlus replaces the switcher entirely: a snapped group becomes **one
+tile**, with a badge for how many windows it contains.
 
-## Comment ça marche
+The UI follows the Windows display language (English by default, French when
+the OS UI is French).
 
-Windows n'expose aucune API publique pour savoir "quelles fenêtres
-appartiennent à quel Snap Group" — cette information vit uniquement dans le
-shell (`twinui.pcshell.dll`), sans interface documentée. Le projet contourne
-ça avec de la géométrie :
+## How it works
 
-1. **`Hooking/KeyboardHook.cs`** — un hook clavier bas niveau (`WH_KEYBOARD_LL`)
-   intercepte Alt+Tab et empêche l'appel de remonter jusqu'au switcher natif
-   (`CallNextHookEx` n'est pas appelé pour cette touche). C'est la même
-   technique qu'utilisent des outils comme AltTabTerminator ou GoToWindow —
-   il n'existe pas de méthode "propre" pour désactiver le switcher natif.
-2. **`Windows/WindowEnumerator.cs`** — énumère les fenêtres éligibles à
-   l'Alt-Tab (visibles, sans propriétaire, pas des tool windows, non
-   "cloaked" c-à-d pas sur un autre bureau virtuel).
-3. **`Grouping/SnapGroupDetector.cs`** — la vraie logique du projet : regroupe
-   les fenêtres par moniteur, relie celles dont les rectangles se touchent
-   bord à bord, et ne retient un groupe que si son union couvre une bonne
-   partie de la zone de travail du moniteur (signature géométrique d'un Snap
-   Layout plutôt que deux fenêtres côte à côte par hasard).
-4. **`UI/SwitcherOverlayForm.cs` + `UI/ThumbnailPanel.cs`** — l'overlay qui
-   remplace le switcher natif, avec des miniatures live via
-   `DwmRegisterThumbnail` (le même mécanisme que les aperçus de la barre des
-   tâches).
-5. **`Switching/SwitchTarget.cs`** — une tuile = soit une fenêtre seule, soit
-   un groupe entier ; `Activate()` remet au premier plan toutes les fenêtres
-   du groupe.
+Windows exposes no public API for “which windows belong to the same Snap
+Group” — that bookkeeping lives in the shell (`twinui.pcshell.dll`) with no
+documented interface. The project infers groups from geometry:
+
+1. **`Hooking/KeyboardHook.cs`** — a low-level keyboard hook
+   (`WH_KEYBOARD_LL`) intercepts Alt+Tab so it never reaches the native
+   switcher. Same approach as tools like AltTabTerminator or GoToWindow;
+   there is no clean official way to disable the built-in picker.
+2. **`Windows/WindowEnumerator.cs`** — enumerates Alt-Tab-eligible windows
+   (visible, no owner, not tool windows, not cloaked).
+3. **`Grouping/SnapGroupDetector.cs`** — groups windows by monitor, links
+   rectangles that touch edge-to-edge, and keeps a group only if it covers
+   enough of the monitor work area (the geometric signature of a Snap Layout
+   rather than two windows that happen to sit next to each other).
+4. **`UI/SwitcherOverlayForm.cs` + `UI/DwmThumbnail.cs`** — the overlay,
+   with live thumbnails via `DwmRegisterThumbnail` (the same mechanism as
+   taskbar previews). The DWM destination must be the top-level window: a
+   child Panel is rejected with `E_INVALIDARG`.
+5. **`Switching/SwitchTarget.cs`** — one tile is either a single window or
+   a whole group; `Activate()` brings every window in the group forward.
 
 ## Build
 
-Le projet cible `net8.0-windows` (WinForms). Un `dotnet build` doit
-s'exécuter **sur Windows** — WinForms + les appels P/Invoke user32/dwmapi ne
-tournent que là :
+The project targets `net8.0-windows` (WinForms). `dotnet build` must run
+**on Windows** — WinForms and the user32/dwmapi P/Invokes only work there:
 
 ```
 dotnet build AltTabPlus.sln
 ```
 
-ou ouvrir `AltTabPlus.sln` dans Visual Studio / Rider.
+or open `AltTabPlus.sln` in Visual Studio / Rider.
 
-Pour lancer en debug, il faut lancer Visual Studio (ou `dotnet run`) **en
-administrateur** si tu veux capturer Alt+Tab dans des fenêtres qui tournent
-elles-mêmes en admin (limitation UIPI classique de Windows : un hook clavier
-non-admin ne voit pas les touches destinées à une fenêtre admin).
+### Release
 
-## Limitations connues (v0)
+From the repo root, on Windows, with the .NET 8 SDK:
 
-- **Détection heuristique, pas garantie.** Deux fenêtres redimensionnées
-  manuellement pour se toucher peuvent être détectées comme un "groupe" à
-  tort ; un Snap Group dont une fenêtre a été redimensionnée après coup peut
-  ne plus être détecté. Le seuil de couverture (`MinWorkAreaCoverage` dans
-  `SnapGroupDetector.cs`) est ajustable.
-- **Pas de persistance de préférences** (pas encore de fenêtre de réglages).
-- **Pas d'installeur** — c'est un exécutable autonome pour l'instant.
-- **Pas de gestion multi-bureaux virtuels avancée** au-delà du filtre cloaked.
-- Aucune télémétrie, aucun accès réseau — tout tourne localement.
+```
+powershell -ExecutionPolicy Bypass -File scripts\build-release.ps1
+powershell -ExecutionPolicy Bypass -File scripts\publish-release.ps1
+```
 
-## Roadmap possible
+`publish-release.ps1` writes a self-contained 64-bit exe (runtime included)
+to `dist\`:
 
-- [ ] Réglages persistés (seuil de détection, raccourci alternatif, thème)
-- [ ] Vraies miniatures pour chaque fenêtre d'un groupe (mini-grille dans la
-      tuile plutôt qu'une seule preview)
-- [ ] Détection explicite via l'API interne de Snap Layout si elle devient
-      accessible un jour, en repli sur l'heuristique sinon
-- [ ] Installeur (MSIX ou simple installeur signé) + démarrage automatique
-- [ ] Tests unitaires sur `SnapGroupDetector` avec des géométries de fenêtres
-      simulées (aucune dépendance Win32 nécessaire pour ça)
+```
+dist\AltTabPlus-1.0.0-win-x64\AltTabPlus.exe
+dist\AltTabPlus-1.0.0-win-x64.zip
+dist\AltTabPlus-1.0.0-win-x64.sha256
+```
 
-## Licence
+Options: `-Version 1.0.1`, `-Mode framework-dependent` (smaller, needs the
+.NET 8 Desktop x64 runtime), `-SkipZip`.
 
-MIT — voir [`LICENSE`](./LICENSE).
+The GitHub Actions workflow (`.github/workflows/ci.yml`) runs those scripts
+on `windows-latest` for every push and PR. Zips show up under **Actions**.
+A `v1.2.3` tag also publishes a GitHub Release.
+
+For debug, run Visual Studio (or `dotnet run`) **as administrator** if you
+need Alt+Tab inside elevated windows (classic UIPI: a non-admin keyboard
+hook does not see keys destined for an admin window).
+
+## Known limitations (v0)
+
+- **Heuristic detection, not guaranteed.** Two windows resized by hand so
+  they touch can be treated as a group; a Snap Group resized afterwards can
+  be missed. The coverage threshold (`MinWorkAreaCoverage` in
+  `SnapGroupDetector.cs`) is adjustable.
+- **No installer** — it is a standalone executable for now. Settings live in
+  `%LOCALAPPDATA%\AltTabPlus\settings.json` and the tray / settings window.
+- **No advanced multi-desktop management** beyond the current filters.
+- No telemetry, no network access — everything stays local.
+
+## Possible roadmap
+
+- [x] Persisted settings (alternate hotkey, launch at startup, taskbar)
+- [x] DWM thumbnails for each window in a group (mini-grid in the tile)
+- [ ] Detection threshold and theme in settings
+- [ ] Explicit Snap Layout API if it ever becomes public, with the
+      heuristic as fallback
+- [ ] Installer (MSIX or a signed setup)
+- [ ] Unit tests for `SnapGroupDetector` with simulated window geometry
+      (no Win32 dependency required)
+
+## Debug
+
+The app has no console and no error UI, so everything is traced to
+`%LOCALAPPDATA%\AltTabPlus\log.txt` (created on first launch): hook install,
+window/group counts each time the switcher opens, HRESULT from
+`DwmRegisterThumbnail` / `DwmUpdateThumbnailProperties`, and each
+activation attempt. If something fails, start there.
+
+Two classic Win32 traps already handled in the code:
+
+- **`GetWindowRect` lies slightly.** It includes an invisible resize-border
+  that Windows 10/11 adds around most windows, so two snapped windows look
+  like they overlap instead of touching. `WindowEnumerator` uses
+  `DWMWA_EXTENDED_FRAME_BOUNDS` for the real visual rect.
+- **`SetForegroundWindow` is ignored from a background process.** Windows
+  blocks focus stealing; a direct call from our hook often does nothing.
+  `ForegroundActivator` uses `AttachThreadInput`, the usual workaround for
+  third-party Alt+Tab replacements.
+
+## License
+
+[PolyForm Noncommercial 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0)
+— see [`LICENSE`](./LICENSE).
+
+Personal, non-profit, and research use is allowed.
+Commercialization (sale, paid licensing, inclusion in a paid product, etc.)
+is reserved to Jean-Charles Lefrançois. Commercial use requires written
+permission from the copyright holder.
