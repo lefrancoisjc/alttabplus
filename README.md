@@ -12,6 +12,8 @@ tile**, with a badge for how many windows it contains.
 The UI follows the Windows display language (English by default, French when
 the OS UI is French).
 
+Site: [lefrancoisjc.github.io/alttabplus](https://lefrancoisjc.github.io/alttabplus/)
+
 ## How it works
 
 Windows exposes no public API for “which windows belong to the same Snap

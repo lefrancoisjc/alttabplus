@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AltTabPlus — one tile per Snap Group</title>
+  <meta name="description" content="A Windows Alt+Tab replacement that collapses snapped windows into a single tile. Live previews, hot corners, type-to-filter.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="glow" aria-hidden="true"></div>
+  <header class="nav">
+    <a class="brand" href="#">
+      <span class="logo" aria-hidden="true"></span>
+      AltTabPlus
+    </a>
+    <nav>
+      <a href="#features" data-i18n="navFeatures">Features</a>
+      <a href="https://github.com/lefrancoisjc/alttabplus">GitHub</a>
+      <button type="button" class="lang" id="lang" aria-label="Language">FR</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow" data-i18n="eyebrow">Windows 10 / 11</p>
+      <h1 data-i18n="heroTitle">Alt+Tab that treats a Snap Group as one thing.</h1>
+      <p class="lede" data-i18n="heroLede">Native Alt+Tab lists the group and every window inside it. AltTabPlus collapses the layout into a single tile, with live previews, then gets out of the way.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/lefrancoisjc/alttabplus/releases/latest" data-i18n="download">Download for Windows</a>
+        <a class="btn ghost" href="https://github.com/lefrancoisjc/alttabplus" data-i18n="source">Source</a>
+      </div>
+    </section>
+
+    <section class="stage" aria-hidden="true">
+      <div class="overlay">
+        <div class="tile selected">
+          <div class="thumbs pair">
+            <div class="thumb t1"></div>
+            <div class="thumb t2"></div>
+          </div>
+          <div class="badge" data-i18n="expand">Expand · Space or ↓</div>
+          <p class="cap">Cursor · Agents <span data-i18n="windows2">2 windows</span></p>
+        </div>
+        <div class="tile">
+          <div class="thumbs"><div class="thumb t3"></div></div>
+          <p class="cap">Firefox</p>
+        </div>
+        <div class="tile">
+          <div class="thumbs"><div class="thumb t4"></div></div>
+          <p class="cap">Discord</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="features">
+      <article>
+        <h2 data-i18n="f1t">One tile per group</h2>
+        <p data-i18n="f1d">Snapped windows stay a layout. Release Alt to bring the whole group forward without breaking the snap.</p>
+      </article>
+      <article>
+        <h2 data-i18n="f2t">Expand when you need one</h2>
+        <p data-i18n="f2d">Click, Space, or ↓ opens the group. Pick a single window. Esc goes back.</p>
+      </article>
+      <article>
+        <h2 data-i18n="f3t">Type to filter</h2>
+        <p data-i18n="f3d">Start typing. Delete or middle-click closes a window. Alt+` cycles the same app.</p>
+      </article>
+      <article>
+        <h2 data-i18n="f4t">Hot corners</h2>
+        <p data-i18n="f4d">macOS-style corners: Task View, this switcher, desktop, next or previous virtual desktop. Off during exclusive fullscreen games.</p>
+      </article>
+      <article>
+        <h2 data-i18n="f5t">Your scope</h2>
+        <p data-i18n="f5d">Current monitor only, hidden windows, other desktops, ignore list. Settings stay in LocalAppData.</p>
+      </article>
+      <article>
+        <h2 data-i18n="f6t">English or French</h2>
+        <p data-i18n="f6d">The app follows the Windows display language. No account, no telemetry, no network.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <p data-i18n="license">PolyForm Noncommercial — personal use is fine. Commercial use needs permission from Jean-Charles Lefrançois.</p>
+    <p><a href="https://github.com/lefrancoisjc/alttabplus/blob/master/LICENSE">LICENSE</a></p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

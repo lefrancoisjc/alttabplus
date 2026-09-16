@@ -1,0 +1,200 @@
+:root {
+  --bg: #121214;
+  --panel: #18181b;
+  --card: #222226;
+  --field: #1c1c20;
+  --line: #303036;
+  --text: #ececf0;
+  --muted: #a8a8b0;
+  --accent: #60cdff;
+  --accent-dim: rgba(96, 205, 255, 0.18);
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  min-height: 100vh;
+  font: 16px/1.5 "Segoe UI", system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+.glow {
+  position: fixed;
+  inset: -20vh 10vw auto;
+  height: 50vh;
+  background: radial-gradient(ellipse at top, var(--accent-dim), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.nav, main, footer { position: relative; z-index: 1; }
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 22px 24px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.logo {
+  width: 18px;
+  height: 18px;
+  border-radius: 5px;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-dim);
+}
+
+nav { display: flex; align-items: center; gap: 18px; }
+nav a { color: var(--muted); text-decoration: none; }
+nav a:hover { color: var(--text); }
+
+.lang {
+  border: 1px solid var(--line);
+  background: var(--field);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font: inherit;
+}
+
+.hero {
+  max-width: 760px;
+  margin: 48px auto 0;
+  padding: 0 24px;
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0 0 12px;
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  line-height: 1.1;
+  letter-spacing: -0.035em;
+  font-weight: 650;
+  margin: 0 0 16px;
+}
+
+.lede { color: var(--muted); font-size: 1.1rem; max-width: 40rem; }
+
+.cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 11px 18px;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 650;
+}
+
+.btn.primary { background: var(--accent); color: #08202b; }
+.btn.ghost { color: var(--text); border: 1px solid var(--line); background: var(--field); }
+
+.stage { max-width: 1040px; margin: 64px auto 0; padding: 0 24px; }
+
+.overlay {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr 1fr;
+  gap: 18px;
+  padding: 28px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+.tile {
+  min-height: 168px;
+  border-radius: 12px;
+  padding: 8px;
+  border: 1.2px solid var(--line);
+  background: var(--card);
+}
+
+.tile.selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-dim);
+}
+
+.thumbs { height: 118px; border-radius: 8px; overflow: hidden; }
+.thumbs.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+.thumb { height: 100%; }
+.t1 { background: linear-gradient(160deg, #3d4f6a, #1b2433); }
+.t2 { background: linear-gradient(160deg, #2c3a2e, #141a16); }
+.t3 { background: linear-gradient(160deg, #5a4630, #211910); }
+.t4 { background: linear-gradient(160deg, #3a2d55, #16121f); }
+
+.badge {
+  position: relative;
+  margin: -110px 0 86px 8px;
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(18, 18, 20, 0.82);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.cap {
+  margin: 10px 4px 2px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.tile.selected .cap { color: var(--text); }
+
+.features {
+  max-width: 1040px;
+  margin: 72px auto;
+  padding: 0 24px 24px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.features article {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px 20px 16px;
+}
+
+.features h2 { margin: 0 0 8px; font-size: 1.05rem; }
+.features p { margin: 0; color: var(--muted); }
+
+footer {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 8px 24px 48px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+footer a { color: var(--accent); }
+
+@media (max-width: 800px) {
+  .overlay, .features { grid-template-columns: 1fr; }
+  .nav { padding-inline: 18px; }
+}
