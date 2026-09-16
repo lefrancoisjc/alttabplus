@@ -26,30 +26,101 @@
     <section class="hero">
       <p class="eyebrow" data-i18n="eyebrow">Windows 10 / 11</p>
       <h1 data-i18n="heroTitle">Alt+Tab that treats a Snap Group as one thing.</h1>
-      <p class="lede" data-i18n="heroLede">Native Alt+Tab lists the group and every window inside it. AltTabPlus collapses the layout into a single tile, with live previews, then gets out of the way.</p>
+      <p class="lede" data-i18n="heroLede">Native Alt+Tab lists the group and every window inside it. AltTabPlus collapses the layout into a single floating picker — the same idea as the Windows switcher, without the clutter.</p>
       <div class="cta">
         <a class="btn primary" href="https://github.com/lefrancoisjc/alttabplus/releases/latest" data-i18n="download">Download for Windows</a>
         <a class="btn ghost" href="https://github.com/lefrancoisjc/alttabplus" data-i18n="source">Source</a>
       </div>
     </section>
 
-    <section class="stage" aria-hidden="true">
-      <div class="overlay">
-        <div class="tile selected">
-          <div class="thumbs pair">
-            <div class="thumb t1"></div>
-            <div class="thumb t2"></div>
+    <section class="desktop-wrap" aria-hidden="true">
+      <p class="shot-label" data-i18n="shotSwitcher">Alt+Tab on the desktop</p>
+      <div class="desktop">
+        <div class="wallpaper">
+          <div class="icons">
+            <span></span><span></span><span></span>
           </div>
-          <div class="badge" data-i18n="expand">Expand · Space or ↓</div>
-          <p class="cap">Cursor · Agents <span data-i18n="windows2">2 windows</span></p>
+          <div class="switcher">
+            <div class="tile selected">
+              <div class="preview pair">
+                <div class="win code">
+                  <div class="titlebar"><i></i><i></i><i></i><b>Cursor</b></div>
+                  <div class="body"><aside></aside><pre></pre></div>
+                </div>
+                <div class="win mail">
+                  <div class="titlebar"><i></i><i></i><i></i><b>Postman</b></div>
+                  <div class="body cols"><div></div><div></div></div>
+                </div>
+              </div>
+              <div class="badge" data-i18n="expand">Expand · Space or ↓</div>
+              <p class="cap"><span class="app-dot"></span>Cursor + Postman <em data-i18n="windows2">2 windows</em></p>
+            </div>
+            <div class="tile">
+              <div class="preview">
+                <div class="win browser">
+                  <div class="titlebar tabs"><s></s><s class="on"></s><s></s></div>
+                  <div class="addr"></div>
+                  <div class="page"></div>
+                </div>
+              </div>
+              <p class="cap"><span class="app-dot fox"></span>Firefox</p>
+            </div>
+            <div class="tile">
+              <div class="preview">
+                <div class="win chat">
+                  <div class="titlebar"><i></i><i></i><i></i><b>Discord</b></div>
+                  <div class="body chat-body"><nav></nav><div class="msgs"><b></b><b></b><b></b></div></div>
+                </div>
+              </div>
+              <p class="cap"><span class="app-dot disc"></span>Discord</p>
+            </div>
+          </div>
         </div>
-        <div class="tile">
-          <div class="thumbs"><div class="thumb t3"></div></div>
-          <p class="cap">Firefox</p>
+        <div class="taskbar">
+          <div class="start"></div>
+          <div class="search" data-i18n="search">Search</div>
+          <div class="pins"><b></b><b></b><b></b><b></b></div>
+          <div class="tray">16:42</div>
         </div>
-        <div class="tile">
-          <div class="thumbs"><div class="thumb t4"></div></div>
-          <p class="cap">Discord</p>
+      </div>
+    </section>
+
+    <section class="compare">
+      <div>
+        <p class="shot-label" data-i18n="shotNative">Windows Alt+Tab</p>
+        <div class="native">
+          <div class="n-tile">Cursor</div>
+          <div class="n-tile on">Postman</div>
+          <div class="n-tile">Cursor + Postman</div>
+          <div class="n-tile">Firefox</div>
+          <div class="n-tile">Discord</div>
+        </div>
+        <p class="note" data-i18n="nativeNote">The snap shows up twice: once as a group, once as each window.</p>
+      </div>
+      <div>
+        <p class="shot-label" data-i18n="shotOurs">AltTabPlus</p>
+        <div class="ours">
+          <div class="o-tile on">Cursor + Postman</div>
+          <div class="o-tile">Firefox</div>
+          <div class="o-tile">Discord</div>
+        </div>
+        <p class="note" data-i18n="oursNote">The snapped pair is one tile. Expand it only if you want a single window.</p>
+      </div>
+    </section>
+
+    <section class="desktop-wrap settings-wrap" aria-hidden="true">
+      <p class="shot-label" data-i18n="shotSettings">Settings window</p>
+      <div class="settings-win">
+        <div class="wintitle">
+          <span>AltTabPlus</span>
+          <div class="winbtns"><i></i><i></i><i class="x"></i></div>
+        </div>
+        <div class="settings-body">
+          <h3 data-i18n="settingsTitle">Settings</h3>
+          <p class="sub" data-i18n="settingsSub">Switcher, hot corners, and startup</p>
+          <div class="row on"><b data-i18n="rowAlt">Replace Alt+Tab</b><i></i></div>
+          <div class="row"><b data-i18n="rowHidden">Hidden windows</b><i></i></div>
+          <div class="row"><b data-i18n="rowCorners">Hot corners</b><span>Win+Tab</span></div>
         </div>
       </div>
     </section>
