@@ -39,7 +39,7 @@ dotnet publish $Project `
     -p:FileVersion="$(Get-AssemblyFileVersion $Version)" `
     -p:PublishSingleFile=true `
     -p:IncludeNativeLibrariesForSelfExtract=true `
-    -p:EnableCompressionInSingleFile=true `
+    -p:EnableCompressionInSingleFile=$selfContained `
     -p:PublishReadyToRun=true `
     -p:DebugType=embedded `
     -p:DebugSymbols=true `
