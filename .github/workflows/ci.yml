@@ -55,6 +55,7 @@ jobs:
         with:
           name: AltTabPlus-${{ steps.version.outputs.value }}-win-x64
           path: |
+            dist/*.exe
             dist/*.zip
             dist/*.sha256
             dist/*.msix

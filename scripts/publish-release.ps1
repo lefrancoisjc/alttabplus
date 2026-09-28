@@ -90,5 +90,7 @@ if (-not $SkipZip) {
 }
 
 $exe = Join-Path $OutDir "AltTabPlus.exe"
-Write-Host "EXE  $exe"
+$exeCopy = Join-Path $DistRoot "$Stamp.exe"
+Copy-Item $exe $exeCopy -Force
+Write-Host "EXE  $exeCopy"
 Write-Host "OK   release $Version ready"

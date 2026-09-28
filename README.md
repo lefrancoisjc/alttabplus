@@ -61,6 +61,7 @@ powershell -ExecutionPolicy Bypass -File scripts\publish-release.ps1
 to `dist\`:
 
 ```
+dist\AltTabPlus-1.0.0-win-x64.exe
 dist\AltTabPlus-1.0.0-win-x64\AltTabPlus.exe
 dist\AltTabPlus-1.0.0-win-x64.zip
 dist\AltTabPlus-1.0.0-win-x64.sha256
