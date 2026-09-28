@@ -66,16 +66,57 @@ dist\AltTabPlus-1.0.0-win-x64.zip
 dist\AltTabPlus-1.0.0-win-x64.sha256
 ```
 
+Then pack the installer (Windows SDK — `makeappx` + a signing cert):
+
+```
+powershell -ExecutionPolicy Bypass -File scripts\publish-msix.ps1
+```
+
+```
+dist\AltTabPlus-1.0.0-win-x64.msix
+dist\AltTabPlus-1.0.0-win-x64.cer
+dist\AltTabPlus-1.0.0-win-x64-msix.zip
+```
+
+The MSIX zip has `Install.ps1`: run it as administrator. It imports the
+publisher certificate and sideloads the package. Settings stay in
+`%LOCALAPPDATA%\AltTabPlus\settings.json` (the package does not virtualize
+AppData).
+
 Options: `-Version 1.0.1`, `-Mode framework-dependent` (smaller, needs the
 .NET 8 Desktop x64 runtime), `-SkipZip`.
 
+For a stable package identity across releases, create a cert once
+(`scripts\new-msix-cert.ps1`) and add GitHub Actions secrets
+`MSIX_PFX_BASE64` and `MSIX_PFX_PASSWORD`. Without them, CI signs with a
+fresh self-signed cert (fine to install, not a clean in-place update).
+
 The GitHub Actions workflow (`.github/workflows/ci.yml`) runs those scripts
-on `windows-latest` for every push and PR. Zips show up under **Actions**.
-A `v1.2.3` tag also publishes a GitHub Release.
+on `windows-latest` for every push and PR. Zips and the MSIX show up under
+**Actions**. A `v1.2.3` tag also publishes a GitHub Release.
 
 For debug, run Visual Studio (or `dotnet run`) **as administrator** if you
 need Alt+Tab inside elevated windows (classic UIPI: a non-admin keyboard
 hook does not see keys destined for an admin window).
+
+## Windows blocked the download
+
+Prefer the **MSIX** from the latest GitHub Release (`*-msix.zip`). Open
+the zip and run `Install.ps1` as administrator. That imports the publisher
+certificate and installs the package.
+
+The portable `.exe` zip is still unsigned. Windows then shows SmartScreen
+or Smart App Control (“the developer could not be verified”):
+
+1. Right-click `AltTabPlus.exe` → **Properties** → tick **Unblock** → OK.
+   Or in PowerShell: `Unblock-File .\AltTabPlus.exe`
+2. If SmartScreen still appears: **More info** → **Run anyway**.
+3. If Smart App Control is on (Windows 11):
+   Settings → Privacy & security → Windows Security → App & browser control
+   → Smart App Control → Off. Then launch again.
+
+A local `dotnet run` from this repo is not marked as an internet download
+and should start without that prompt.
 
 ## Known limitations (v0)
 
@@ -83,8 +124,9 @@ hook does not see keys destined for an admin window).
   they touch can be treated as a group; a Snap Group resized afterwards can
   be missed. The coverage threshold (`MinWorkAreaCoverage` in
   `SnapGroupDetector.cs`) is adjustable.
-- **No installer** — it is a standalone executable for now. Settings live in
-  `%LOCALAPPDATA%\AltTabPlus\settings.json` and the tray / settings window.
+- Settings live in `%LOCALAPPDATA%\AltTabPlus\settings.json` and the tray /
+  settings window. The MSIX installer sideloads a signed package; the
+  portable zip is still an unsigned exe.
 - **No advanced multi-desktop management** beyond the current filters.
 - No telemetry, no network access — everything stays local.
 
@@ -95,7 +137,7 @@ hook does not see keys destined for an admin window).
 - [ ] Detection threshold and theme in settings
 - [ ] Explicit Snap Layout API if it ever becomes public, with the
       heuristic as fallback
-- [ ] Installer (MSIX or a signed setup)
+- [x] MSIX sideload installer (`scripts/publish-msix.ps1`)
 - [ ] Unit tests for `SnapGroupDetector` with simulated window geometry
       (no Win32 dependency required)
 

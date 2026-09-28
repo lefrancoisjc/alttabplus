@@ -9,6 +9,8 @@ internal sealed class DwmThumbnail : IDisposable
     private readonly IntPtr _sourceHandle;
     private IntPtr _thumbnailId = IntPtr.Zero;
 
+    public bool IsLive => _thumbnailId != IntPtr.Zero;
+
     public DwmThumbnail(IntPtr destinationHandle, IntPtr sourceHandle, Rectangle destRect)
     {
         _sourceHandle = sourceHandle;

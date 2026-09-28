@@ -33,6 +33,11 @@ internal static class StartupRegistration
     {
         get
         {
+            if (AppPackage.IsPackaged && File.Exists(AppPackage.AliasPath))
+            {
+                return $"\"{AppPackage.AliasPath}\"";
+            }
+
             var path = Environment.ProcessPath ?? Application.ExecutablePath;
             return $"\"{path}\"";
         }

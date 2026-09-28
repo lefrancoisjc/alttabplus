@@ -43,6 +43,13 @@ jobs:
         shell: pwsh
         run: ./scripts/publish-release.ps1 -Version "${{ steps.version.outputs.value }}" -Mode framework-dependent
 
+      - name: Publish MSIX
+        shell: pwsh
+        env:
+          MSIX_PFX_BASE64: ${{ secrets.MSIX_PFX_BASE64 }}
+          MSIX_PFX_PASSWORD: ${{ secrets.MSIX_PFX_PASSWORD }}
+        run: ./scripts/publish-msix.ps1 -Version "${{ steps.version.outputs.value }}"
+
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
@@ -50,6 +57,8 @@ jobs:
           path: |
             dist/*.zip
             dist/*.sha256
+            dist/*.msix
+            dist/*.cer
           if-no-files-found: error
 
   release:

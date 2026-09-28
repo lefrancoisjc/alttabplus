@@ -20,6 +20,7 @@ internal sealed class SwitcherOverlayForm : Form
 
     private readonly List<SwitchTarget> _root;
     private readonly List<DwmThumbnail> _thumbnails = new();
+    private readonly List<(Rectangle Rect, Icon? Icon)> _fallbacks = new();
     private readonly List<Rectangle> _tileRects = new();
     private readonly List<List<Icon>> _icons = new();
     private List<SwitchTarget> _view;
@@ -328,6 +329,8 @@ internal sealed class SwitcherOverlayForm : Form
             DrawTileChrome(e.Graphics, i);
             DrawCaption(e.Graphics, i);
         }
+
+        DrawFallbackPreviews(e.Graphics);
     }
 
     private void DrawTileChrome(Graphics g, int index)
@@ -442,8 +445,42 @@ internal sealed class SwitcherOverlayForm : Form
             var cells = ThumbnailCells(_tileRects[i], _view[i]);
             for (var c = 0; c < cells.Length; c++)
             {
-                _thumbnails.Add(new DwmThumbnail(Handle, _view[i].Windows[c].Handle, cells[c]));
+                var window = _view[i].Windows[c];
+                if (!window.IsOnOtherDesktop)
+                {
+                    var thumb = new DwmThumbnail(Handle, window.Handle, cells[c]);
+                    if (thumb.IsLive)
+                    {
+                        _thumbnails.Add(thumb);
+                        continue;
+                    }
+
+                    thumb.Dispose();
+                }
+
+                _fallbacks.Add((cells[c], WindowIcon.TryGet(window.Handle)));
             }
+        }
+    }
+
+    private void DrawFallbackPreviews(Graphics g)
+    {
+        using var fill = new SolidBrush(OverlayTheme.PreviewEmpty);
+        foreach (var (rect, icon) in _fallbacks)
+        {
+            g.FillRectangle(fill, rect);
+            if (icon is null)
+            {
+                continue;
+            }
+
+            var size = Math.Clamp(Math.Min(rect.Width, rect.Height) / 3, 24, 64);
+            var box = new Rectangle(
+                rect.Left + (rect.Width - size) / 2,
+                rect.Top + (rect.Height - size) / 2,
+                size,
+                size);
+            g.DrawIcon(icon, box);
         }
     }
 
@@ -559,5 +596,11 @@ internal sealed class SwitcherOverlayForm : Form
         }
 
         _thumbnails.Clear();
+        foreach (var (_, icon) in _fallbacks)
+        {
+            icon?.Dispose();
+        }
+
+        _fallbacks.Clear();
     }
 }

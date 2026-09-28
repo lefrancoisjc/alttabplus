@@ -7,6 +7,7 @@ namespace AltTabPlus.UI;
 internal static class OverlayTheme
 {
     public static readonly Color Backdrop = Color.FromArgb(24, 24, 27);
+    public static readonly Color PreviewEmpty = Color.Black;
     public static readonly Color Caption = Color.FromArgb(236, 236, 240);
     public static readonly Color CaptionMuted = Color.FromArgb(168, 168, 176);
     public static readonly Color IdleRing = Color.FromArgb(56, 56, 62);

@@ -293,6 +293,9 @@ internal static class NativeMethods
     [DllImport("kernel32.dll")]
     public static extern ushort GetUserDefaultUILanguage();
 
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
+    public static extern int GetCurrentPackageFullName(ref int packageFullNameLength, StringBuilder? packageFullName);
+
     [DllImport("dwmapi.dll")]
     public static extern int DwmGetWindowAttribute(IntPtr hwnd, int dwAttribute, out int pvAttribute, int cbAttribute);
 

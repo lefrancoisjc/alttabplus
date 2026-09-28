@@ -6,3 +6,5 @@ obj/
 publish/
 dist/
 *.zip
+*.pfx
+packaging/*.cer

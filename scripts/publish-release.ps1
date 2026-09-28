@@ -59,6 +59,12 @@ Run AltTabPlus.exe (64-bit Windows 10/11).
 Settings are in the tray icon and in
 %LOCALAPPDATA%\AltTabPlus\settings.json
 
+Windows may block the first launch (unsigned download):
+  1. Right-click AltTabPlus.exe → Properties → Unblock → OK
+  2. If SmartScreen appears: More info → Run anyway
+  3. If Smart App Control is on, turn it off under
+     Windows Security → App & browser control
+
 The .NET 8 runtime is included in this build.
 "@
 if (-not $selfContained) {

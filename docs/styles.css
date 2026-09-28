@@ -97,6 +97,7 @@ h1 {
 
 .lede { color: var(--muted); font-size: 1.1rem; max-width: 40rem; }
 .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.smartscreen { color: var(--muted); font-size: 0.88rem; max-width: 36rem; margin: 14px 0 0; }
 
 .btn {
   display: inline-flex;

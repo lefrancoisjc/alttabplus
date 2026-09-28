@@ -9,5 +9,14 @@ function Get-AssemblyFileVersion([string]$Version) {
         $parts = $parts[0..3]
     }
 
+    if ($Version -match '(?i)ci\.(\d+)') {
+        $revision = [int]$Matches[1]
+        if ($revision -gt 65535) {
+            $revision = $revision % 65536
+        }
+
+        $parts[3] = "$revision"
+    }
+
     return ($parts -join '.')
 }
